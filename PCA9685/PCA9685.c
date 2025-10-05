@@ -212,7 +212,7 @@ PCA9685_STATUS PCA9685_Test()
 	PCA9685_SetServoAngle(servo_0, 90);
 	PCA9685_SetServoAngle(servo_1, 90);
 	PCA9685_SetServoAngle(servo_2, 90);
-	PCA9685_SetServoAngle(servo_3, 90);
+	PCA9685_SetServoAngle(servo_3, 180);
 	PCA9685_SetServoAngle(servo_4, 90);
 	PCA9685_SetServoAngle(servo_5, 90);
 	return PCA9685_OK;

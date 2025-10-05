@@ -9,7 +9,8 @@
 #include "main.h"
 
 static uint32_t TIM4_tick_ms = 0; // 静态变量，跟踪时间滴答
-uint8_t ActiveServo;
+P_BotArm arm0;
+
 /**
   * @brief 主程序入口函数
   * @return int
@@ -17,12 +18,14 @@ uint8_t ActiveServo;
 int user_main()
 {
     delay_init(72); //时钟频率
-    PCA9685_Init(&hi2c1);
-    // HAL_TIM_Base_Start_IT(&htim2);  // 启动定时器并使能中断
     HAL_TIM_Base_Start_IT(&htim4); // 启动定时器并使能中断
-    BotArm_Init();
+    arm0 = GetBotArmDevice(botarm_0);
+    arm0->Init();
     while (1) {
-
+        // PCA9685_Test();
+        float joint_angles[] = {90.0f, 45.0f, 30.0f, 60.0f, 90.0f};  // 只有5个关节
+        arm0->move_joints(joint_angles);
+        arm0->claw_set(claw_open);
     }
 }
 

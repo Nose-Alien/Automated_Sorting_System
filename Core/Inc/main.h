@@ -35,6 +35,7 @@ extern "C" {
 #include "PCA9685.h"
 #include "tim.h"
 #include "bot_arm.h"
+#include "i2c.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
