@@ -187,25 +187,33 @@ PCA9685_STATUS PCA9685_Init(I2C_HandleTypeDef *hi2c)
 	return PCA9685_OK;
 }
 
+
 PCA9685_STATUS PCA9685_Test()
 {
-	for (uint8_t time = 0; time < 50; time++) {
-		Servo360_SetSpeed(servo_1, Forward);
-		Servo360_SetSpeed(servo_2, Forward);
-		delay_ms(100);
-	}
-	for (uint16_t time = 50; time > 0; time--) {
-		Servo360_SetSpeed(servo_1, Reverse);
-		Servo360_SetSpeed(servo_2, Reverse);
-		delay_ms(100);
-	}
-	for (uint8_t Angle = 0; Angle < 180; Angle++) {
-		PCA9685_SetServoAngle(0, Angle);
-		delay_ms(50);
-	}
-	for (uint16_t Angle = 180; Angle > 0; Angle--) {
-		PCA9685_SetServoAngle(0, Angle);
-		delay_ms(50);
-	}
+	// for (uint8_t time = 0; time < 50; time++) {
+	// 	Servo360_SetSpeed(servo_1, Forward);
+	// 	Servo360_SetSpeed(servo_2, Forward);
+	// 	delay_ms(100);
+	// }
+	// for (uint16_t time = 50; time > 0; time--) {
+	// 	Servo360_SetSpeed(servo_1, Reverse);
+	// 	Servo360_SetSpeed(servo_2, Reverse);
+	// 	delay_ms(100);
+	// }
+
+	// for (uint8_t Angle = 0; Angle < 180; Angle++) {
+	// 	PCA9685_SetServoAngle(0, Angle);
+	// 	delay_ms(50);
+	// }
+	// for (uint16_t Angle = 180; Angle > 0; Angle--) {
+	// 	PCA9685_SetServoAngle(0, Angle);
+	// 	delay_ms(50);
+	// }
+	PCA9685_SetServoAngle(servo_0, 90);
+	PCA9685_SetServoAngle(servo_1, 90);
+	PCA9685_SetServoAngle(servo_2, 90);
+	PCA9685_SetServoAngle(servo_3, 90);
+	PCA9685_SetServoAngle(servo_4, 90);
+	PCA9685_SetServoAngle(servo_5, 90);
 	return PCA9685_OK;
 }

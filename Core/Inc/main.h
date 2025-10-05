@@ -34,6 +34,7 @@ extern "C" {
 #include "delay.h"
 #include "PCA9685.h"
 #include "tim.h"
+#include "bot_arm.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -77,10 +77,12 @@ target_sources(${PROJECT_NAME}.elf
         ${CMAKE_CURRENT_SOURCE_DIR}/delay/delay.c
         ${CMAKE_CURRENT_SOURCE_DIR}/PCA9685/PCA9685.c
         ${CMAKE_CURRENT_SOURCE_DIR}/user_main/user_main.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/bot_arm/bot_arm.c
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/delay/delay.h
         ${CMAKE_CURRENT_SOURCE_DIR}/PCA9685/PCA9685.h
         ${CMAKE_CURRENT_SOURCE_DIR}/user_main/user_main.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/bot_arm/bot_arm.h
 )
 
 target_include_directories(${PROJECT_NAME}.elf
@@ -88,6 +90,7 @@ target_include_directories(${PROJECT_NAME}.elf
         ${CMAKE_CURRENT_SOURCE_DIR}/delay
         ${CMAKE_CURRENT_SOURCE_DIR}/PCA9685
         ${CMAKE_CURRENT_SOURCE_DIR}/user_main
+        ${CMAKE_CURRENT_SOURCE_DIR}/bot_arm
 
 )
 

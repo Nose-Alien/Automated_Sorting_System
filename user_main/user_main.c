@@ -9,6 +9,7 @@
 #include "main.h"
 
 static uint32_t TIM4_tick_ms = 0; // 静态变量，跟踪时间滴答
+uint8_t ActiveServo;
 /**
   * @brief 主程序入口函数
   * @return int
@@ -19,8 +20,9 @@ int user_main()
     PCA9685_Init(&hi2c1);
     // HAL_TIM_Base_Start_IT(&htim2);  // 启动定时器并使能中断
     HAL_TIM_Base_Start_IT(&htim4); // 启动定时器并使能中断
+    BotArm_Init();
     while (1) {
-        // PCA9685_Test();
+
     }
 }
 
