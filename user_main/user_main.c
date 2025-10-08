@@ -10,6 +10,7 @@
 
 static uint32_t TIM4_tick_ms = 0; // 静态变量，跟踪时间滴答
 P_BotArm arm0;
+float joint_angles[] = {90.0f, 30.0f, 90.0f, 0.0f, 90.0f};
 
 /**
   * @brief 主程序入口函数
@@ -21,11 +22,13 @@ int user_main()
     HAL_TIM_Base_Start_IT(&htim4); // 启动定时器并使能中断
     arm0 = GetBotArmDevice(botarm_0);
     arm0->Init();
+    arm0->move_joints(joint_angles);
     while (1) {
-        // PCA9685_Test();
-        float joint_angles[] = {90.0f, 45.0f, 30.0f, 60.0f, 90.0f};  // 只有5个关节
-        arm0->move_joints(joint_angles);
         arm0->claw_set(claw_open);
+        arm0->move_joints(joint_angles);
+        // delay_ms(1000);
+        // arm0->claw_set(claw_close);
+        // delay_ms(1000);
     }
 }
 
