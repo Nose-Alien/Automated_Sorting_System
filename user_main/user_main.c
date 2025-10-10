@@ -29,16 +29,6 @@ int user_main()
     arm0->move_joints(arm0, joint_angles);
     while (1) {
         conveyor->Forward(conveyor, CONVEYOR_DEFAULT_SPEED);
-        delay_ms(5000);
-        // conveyor->Stop(conveyor);
-        // delay_ms(5000);
-        conveyor->Backward(conveyor, CONVEYOR_DEFAULT_SPEED);
-        delay_ms(5000);
-        // arm0->claw_set(claw_open);
-        // arm0->move_joints(joint_angles);
-        // delay_ms(1000);
-        // arm0->claw_set(claw_close);
-        // delay_ms(1000);
     }
 }
 
@@ -54,8 +44,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         if (TIM4_tick_ms % 500 == 0) {
             HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         }
-        // 每1000毫秒（1秒）调用一次
         if (TIM4_tick_ms % 1000 == 0) {
+            arm0->claw_set(arm0,claw_open);
+        }
+        if (TIM4_tick_ms % 2000 == 0) {
+            arm0->claw_set(arm0,claw_close);
             TIM4_tick_ms = 0; // 重置计时器计数
         }
     }
