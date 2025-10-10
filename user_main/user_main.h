@@ -7,7 +7,7 @@ extern "C" {
 
 #endif
 #include "main.h"
-#include "stm32f1xx_hal.h"
+
 
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim2;

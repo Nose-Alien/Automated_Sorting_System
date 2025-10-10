@@ -6,10 +6,12 @@
   */
 
 #include "user_main.h"
-#include "main.h"
+#include "conveyor_device.h"
+
 
 static uint32_t TIM4_tick_ms = 0; // 静态变量，跟踪时间滴答
 P_BotArm arm0;
+P_Conveyor_Device conveyor;
 float joint_angles[] = {90.0f, 30.0f, 90.0f, 0.0f, 90.0f};
 
 /**
@@ -21,11 +23,19 @@ int user_main()
     delay_init(72); //时钟频率
     HAL_TIM_Base_Start_IT(&htim4); // 启动定时器并使能中断
     arm0 = GetBotArmDevice(botarm_0);
-    arm0->Init();
-    arm0->move_joints(joint_angles);
+    conveyor = Conveyor_Device_Create();
+    arm0->Init(arm0);
+    conveyor->Init(conveyor);
+    arm0->move_joints(arm0, joint_angles);
     while (1) {
-        arm0->claw_set(claw_open);
-        arm0->move_joints(joint_angles);
+        conveyor->Forward(conveyor, CONVEYOR_DEFAULT_SPEED);
+        delay_ms(5000);
+        // conveyor->Stop(conveyor);
+        // delay_ms(5000);
+        conveyor->Backward(conveyor, CONVEYOR_DEFAULT_SPEED);
+        delay_ms(5000);
+        // arm0->claw_set(claw_open);
+        // arm0->move_joints(joint_angles);
         // delay_ms(1000);
         // arm0->claw_set(claw_close);
         // delay_ms(1000);
