@@ -1,10 +1,3 @@
-"""
-实验名称：在线训练-YOLO图像检测: 基于摄像头
-实验平台：01Studio CanMV K230/CanMV K230 mini
-说明：可以通过display="xxx"参数选择"hdmi"、"lcd3_5"(3.5寸mipi屏)或"lcd2_4"(2.4寸mipi屏)显示方式
-01科技（01Studio）在线训练平台：https://ai.01studio.cc
-"""
-
 from libs.PipeLine import PipeLine
 from libs.YOLO import YOLO11
 from libs.Utils import *
@@ -13,6 +6,18 @@ import os, sys, gc
 import ulab.numpy as np
 import image
 import time
+#导入串口模块
+from machine import UART
+from machine import FPIOA
+
+fpioa = FPIOA()
+
+# UART2代码
+fpioa.set_function(11, FPIOA.UART2_TXD)
+fpioa.set_function(12, FPIOA.UART2_RXD)
+
+uart = UART(UART.UART2, 115200) #设置串口号2和波特率
+#uart.write('Hello 01Studio!\n') #发送一条数据
 
 # 这里为自动生成内容，自定义场景请修改为您自己的模型路径、标签名称、模型输入大小
 kmodel_path="/sdcard/yolo11n_det_640.kmodel"
@@ -42,14 +47,13 @@ pl = PipeLine(
 
 if display == "lcd2_4":
     pl.create(sensor=Sensor(width=1280, height=960))  # 创建PipeLine实例，画面4:3
-
 else:
     pl.create(sensor=Sensor(width=1920, height=1080))  # 创建PipeLine实例
 
 display_size = pl.get_display_size()
 
 # 初始化YOLO11实例
-confidence_threshold = 0.6  # 置信度
+confidence_threshold = 0.85  # 置信度
 nms_threshold = 0.45
 yolo = YOLO11(
     task_type="detect",
@@ -69,14 +73,46 @@ yolo.config_preprocess()
 clock = time.clock()
 
 while True:
-
     clock.tick()
 
     # 逐帧推理
     img = pl.get_frame()
     res = yolo.run(img)
     yolo.draw_result(res, pl.osd_img)
-    print(res)  # 打印识别结果
+
+    # 只在检测到目标时发送数据到串口
+    if res and len(res) >= 3 and len(res[0]) > 0:
+        # 创建数据字符串
+        data_str = ""
+
+        # 添加检测目标数量
+        num_detections = len(res[0])
+        data_str += f"D:{num_detections};"
+
+        # 添加每个检测目标的原始数据
+        for i in range(num_detections):
+            # 边界框数据
+            bbox = res[0][i]
+            # 类别ID
+            class_id = res[1][i]
+            # 置信度
+            score = res[2][i]
+
+            # 将数据添加到字符串
+            data_str += f"B:{bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]};"
+            data_str += f"C:{class_id};"
+            data_str += f"S:{score:.4f};"
+
+        # 发送数据到串口
+        try:
+            uart.write(data_str + '\n')
+            print(f"发送到串口: {data_str}")
+        except Exception as e:
+            print(f"串口发送错误: {e}")
+    else:
+        # 没有检测到目标，不发送任何数据
+        print("未检测到目标，不发送数据")
+
     pl.show_image()
     gc.collect()
 
