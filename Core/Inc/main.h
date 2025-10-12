@@ -38,6 +38,13 @@ extern "C" {
 #include "i2c.h"
 #include "l298n_driver.h"
 #include "user_main.h"
+#include "usart.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+
 
 /* USER CODE END Includes */
 

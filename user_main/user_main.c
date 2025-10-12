@@ -6,8 +6,8 @@
   */
 
 #include "user_main.h"
+#include "k230_uart_dma.h"
 #include "conveyor_device.h"
-
 
 static uint32_t TIM4_tick_ms = 0; // 静态变量，跟踪时间滴答
 P_BotArm arm0;
@@ -21,12 +21,14 @@ float joint_angles[] = {90.0f, 30.0f, 90.0f, 0.0f, 90.0f};
 int user_main()
 {
     delay_init(72); //时钟频率
+    K230_urat_dma_Init();
     HAL_TIM_Base_Start_IT(&htim4); // 启动定时器并使能中断
     arm0 = GetBotArmDevice(botarm_0);
     conveyor = Conveyor_Device_Create();
     arm0->Init(arm0);
     conveyor->Init(conveyor);
     arm0->move_joints(arm0, joint_angles);
+
     while (1) {
         conveyor->Forward(conveyor, CONVEYOR_DEFAULT_SPEED);
     }
@@ -45,12 +47,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         }
         if (TIM4_tick_ms % 1000 == 0) {
-            arm0->claw_set(arm0,claw_open);
+            // arm0->claw_set(arm0,claw_open);
         }
         if (TIM4_tick_ms % 2000 == 0) {
-            arm0->claw_set(arm0,claw_close);
+            // arm0->claw_set(arm0,claw_close);
             TIM4_tick_ms = 0; // 重置计时器计数
         }
     }
 }
-
+// void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+// {
+//     if (huart== &huart2) {
+//         HAL_UART_Transmit_DMA(&huart2, data, Size);
+//         HAL_UARTEx_ReceiveToIdle_DMA(&huart2, data, sizeof(data));
+//         __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
+//     }
+// }
