@@ -81,6 +81,7 @@ target_sources(${PROJECT_NAME}.elf
         ${CMAKE_CURRENT_SOURCE_DIR}/l298n/l298n_driver.c
         ${CMAKE_CURRENT_SOURCE_DIR}/l298n/conveyor_device.c
         ${CMAKE_CURRENT_SOURCE_DIR}/K230_uart_dma/k230_uart_dma.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/uart/driver_uart.c
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/delay/delay.h
         ${CMAKE_CURRENT_SOURCE_DIR}/PCA9685/PCA9685.h
@@ -89,6 +90,7 @@ target_sources(${PROJECT_NAME}.elf
         ${CMAKE_CURRENT_SOURCE_DIR}/l298n/l298n_driver.h
         ${CMAKE_CURRENT_SOURCE_DIR}/l298n/conveyor_device.h
         ${CMAKE_CURRENT_SOURCE_DIR}/K230_uart_dma/k230_uart_dma.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/uart/driver_uart.h
 )
 
 target_include_directories(${PROJECT_NAME}.elf
@@ -99,6 +101,7 @@ target_include_directories(${PROJECT_NAME}.elf
         ${CMAKE_CURRENT_SOURCE_DIR}/bot_arm
         ${CMAKE_CURRENT_SOURCE_DIR}/l298n
         ${CMAKE_CURRENT_SOURCE_DIR}/K230_uart_dma
+        ${CMAKE_CURRENT_SOURCE_DIR}/uart
 
 
 )
