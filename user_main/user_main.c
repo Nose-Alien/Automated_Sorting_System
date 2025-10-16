@@ -48,8 +48,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim == &htim4) {
         // 判断中断源是否为定时器htim2
-        TIM4_tick_ms++; // 每次中断时增加计数
-        // 每5毫秒调用一次
+        TIM4_tick_ms++; // 每次中断时增加计数s
         if (TIM4_tick_ms % 5 == 0) {
         }
         // 每500毫秒调用一次
