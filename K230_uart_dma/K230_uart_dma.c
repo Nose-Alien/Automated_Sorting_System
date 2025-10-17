@@ -1,6 +1,9 @@
-//
-// Created by nose on 2025/10/12.
-//
+/**
+* @file K230_uart_dma.c
+  * @brief K230 串口 DMA 数据解析与回调实现
+  * @author sleet
+  * @date 2025/9/30
+  */
 
 #include "k230_uart_dma.h"
 #include <string.h>

@@ -1,3 +1,10 @@
+/**
+  * @file bot_arm.h
+  * @brief 机械臂接口定义与类型声明
+  * @author sleet
+  * @date 2025/10/5
+  */
+
 #ifndef BOT_ARM_H
 #define BOT_ARM_H
 
@@ -33,6 +40,7 @@ typedef enum {
 // 机械臂操作接口结构体
 typedef struct BotArm {
     int which;  // 机械臂标识，用于区分不同机械臂实例
+    float LastAngl[6]; // 记录上次夹取角度
 
     // 函数指针 - 需要传递设备指针
     int (*Init)(struct BotArm *P_BotArm);                       // 初始化函数
@@ -40,6 +48,8 @@ typedef struct BotArm {
     int (*set_angle)(struct BotArm *P_BotArm, node Channel, float Angle); // 设置单个节点角度
     int (*move_to)(struct BotArm *P_BotArm, float angles[]);    // 移动所有可移动节点
     int (*move_joints)(struct BotArm *P_BotArm, float angles[]); // 只移动关节节点（不包含抓手）
+    int (*smooth_set_angle)(struct BotArm *P_BotArm, node Channel, float Angle); // 平滑设置单个节点角度
+    int (*coordinated_move)(struct BotArm *P_BotArm, float angles[], uint8_t num_nodes); // 协调移动多个节点
 } BotArm, *P_BotArm;
 
 // 获取指定机械臂设备

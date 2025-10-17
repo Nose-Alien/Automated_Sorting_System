@@ -1,3 +1,10 @@
+/**
+* @file K230_uart_dma.h
+  * @brief K230 串口 DMA 相关数据结构与接口声明
+  * @author sleet
+  * @date 2025/9/30
+  */
+
 #ifndef __K230_UART_DMA_H__
 #define __K230_UART_DMA_H__
 

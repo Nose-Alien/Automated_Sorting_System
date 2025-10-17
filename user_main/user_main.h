@@ -1,3 +1,9 @@
+/**
+* @file user_main.h
+  * @brief 用户主程序头文件与接口声明
+  * @author sleet
+  * @date 2025/9/30
+  */
 
 #ifndef USER_MAIN_H
 #define USER_MAIN_H
