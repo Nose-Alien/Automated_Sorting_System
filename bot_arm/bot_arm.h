@@ -1,3 +1,10 @@
+/**
+* @file bot_arm.h
+  * @brief 机械臂设备抽象层
+  * @author Nose_Alien
+  * @date 2025/10/5
+  */
+
 #ifndef BOT_ARM_H
 #define BOT_ARM_H
 

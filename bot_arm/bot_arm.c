@@ -1,3 +1,10 @@
+/**
+* @file bot_arm.c
+  * @brief 机械臂设备抽象层
+  * @author Nose_Alien
+  * @date 2025/10/5
+  */
+
 #include "bot_arm.h"
 #include <math.h>
 

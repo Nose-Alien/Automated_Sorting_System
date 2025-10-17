@@ -1,7 +1,7 @@
 /**
 * @file K230_uart_dma.c
   * @brief K230 串口 DMA 数据解析与回调实现
-  * @author sleet
+  * @author Nose_Alien
   * @date 2025/9/30
   */
 

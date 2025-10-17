@@ -1,7 +1,7 @@
 /**
   * @file user_main.c
   * @brief 用户主程序的入口文件
-  * @author sleet
+  * @author Nose_Alien
   * @date 2025/9/30
   */
 
@@ -28,7 +28,8 @@ int user_main()
     user_main_int();
     delay_ms(2000);
     while (1) {
-        bot_arm_Action_group();
+        // conveyor->Forward(conveyor, CONVEYOR_DEFAULT_SPEED);
+        // bot_arm_Action_group();
     }
 }
 
@@ -64,9 +65,10 @@ void user_main_int()
     arm0->Init(arm0);
     // 初始化角度记录
     for (int i = 0; i <= 4; i++) {
-        arm0->LastAngl[i] = joint_angles_grasp_init[i];
+        arm0->LastAngl[i] = joint_angles_place_init[i];
     }
     arm0->claw_set(arm0, claw_open);
+    arm0->smooth_move_to(arm0, joint_angles_place_init);
 }
 void bot_arm_Action_group(void)
 {

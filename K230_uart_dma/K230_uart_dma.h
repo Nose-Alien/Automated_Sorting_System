@@ -1,7 +1,7 @@
 /**
 * @file K230_uart_dma.h
   * @brief K230 串口 DMA 相关数据结构与接口声明
-  * @author sleet
+  * @author Nose_Alien
   * @date 2025/9/30
   */
 
