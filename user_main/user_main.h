@@ -14,6 +14,7 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim6;
 
 int user_main();
+void main_int();
 void BotArm_ClawPosture(void);
 
 #ifdef __cplusplus

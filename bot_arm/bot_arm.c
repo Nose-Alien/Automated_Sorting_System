@@ -1,6 +1,4 @@
 #include "bot_arm.h"
-#include "pca9685.h"
-
 // 机械臂配置结构体 - 存储每个机械臂的特定配置参数
 typedef struct {
     node claw_node; // 抓手对应的节点
@@ -83,14 +81,11 @@ static int BotArm_SetAngle(struct BotArm *P_BotArm, node Channel, float angle)
         angle > config->angle_limits[Channel][1]) {
         return -4; // 角度超出限制
     }
-    if (Channel == node_4) {
-        angle = 180.0f - angle;//因结构，将关节5的旋转方向反转
-    }
-
+    // if (Channel == node_4) {
+    //     angle = 180.0f - angle;//因结构，将关节5的旋转方向反转
+    // }
     // 调用底层PCA9685驱动设置角度
-    PCA9685_SetServoAngle(Channel, angle);
-    delay_ms(200);
-
+        PCA9685_SetServoAngle(Channel, angle);
     return 0; // 设置成功
 }
 
@@ -120,7 +115,7 @@ static int BotArm_Claw(struct BotArm *P_BotArm, claw_state state)
     float angle = (state == claw_open) ? config->open_angle : config->close_angle;
 
     // 设置抓手节点角度
-    return BotArm_SetAngle(P_BotArm, config->claw_node, angle);
+    return PCA9685_SetServoAngle(config->claw_node, angle);
 }
 
 /**
@@ -148,7 +143,6 @@ static int BotArm_MoveJoints(struct BotArm *P_BotArm, float angles[])
         angles[4] = 90.0f;
     }
 
-    // angles[4] = 180.0f - angles[4]; //因结构，将关节5的旋转方向反转
 
     // 只移动 node_0 到 node_4（关节节点），跳过 node_5（抓手）
     for (node i = node_0; i < node_5; i++) {
@@ -215,7 +209,8 @@ static BotArm BotArmDevices[] = {
         BotArm_Claw, // 抓手控制函数
         BotArm_SetAngle, // 设置角度函数
         BotArm_MoveTo, // 移动所有可移动节点函数
-        BotArm_MoveJoints // 移动关节函数
+        BotArm_MoveJoints, // 移动关节函数
+        // {90.0f, 50.0f, 35.0f, 100.0f, 90.0f},// 记录上次夹取角度
     },
 };
 

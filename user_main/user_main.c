@@ -12,28 +12,22 @@
 static uint32_t TIM4_tick_ms = 0; // 静态变量，跟踪时间滴答
 P_BotArm arm0;
 P_Conveyor_Device conveyor;
-float joint_angles_init[] = {90.0f, 50.0f, 35.0f, 100.0f, 90.0f};// {90.0f, 50.0f, 35.0f, 50.0f, 140.0f};初始姿态
-// float joint_angles[] = {90.0f, 90.0f, 35.0f, 100.0f, 140.0f};// {90.0f, 90.0f, 35.0f, 100.0f, 140.0f};夹取姿态
+float joint_angles_init[] = {90.0f, 60.0f, 35.0f, 100.0f, 180-140.0f};// {90.0f, 50.0f, 35.0f, 100.0f, 140.0f};初始姿态
+// float joint_angles[] = {90.0f, 80.0f, 35.0f, 80.0f, 180-140.0f};// {90.0f, 80.0f, 35.0f, 80.0f, 180-140.0f};夹取姿态
 /**
   * @brief 主程序入口函数
   * @return int
   */
 int user_main()
 {
-    delay_init(72); //时钟频率
-    RetargetInit(&huart1);
-    K230_urat_dma_Init();
-    HAL_TIM_Base_Start_IT(&htim4); // 启动定时器并使能中断
-    arm0 = GetBotArmDevice(botarm_0);
-    conveyor = Conveyor_Device_Create();
-    arm0->Init(arm0);
-    conveyor->Init(conveyor);
-
-    arm0->move_joints(arm0, joint_angles_init);
-    // arm0->claw_set(arm0, claw_open);
-    delay_ms(2000);
+    main_int();
+    // arm0->set_angle(arm0, node_4,140);
     while (1) {
         BotArm_ClawPosture();
+        arm0->claw_set(arm0,claw_close);
+        delay_ms(2000);
+        arm0->claw_set(arm0, claw_open);
+        delay_ms(2000);
         // conveyor->Forward(conveyor, CONVEYOR_DEFAULT_SPEED);
         // if (Apple == 1 || Strawberry == 1 || Watermelon == 1) {
         //     conveyor->Stop(conveyor);
@@ -75,9 +69,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 // }
 void BotArm_ClawPosture(void)
 {
-    arm0->set_angle(arm0, node_4,140);
-    arm0->set_angle(arm0, node_0,90);
-    arm0->set_angle(arm0, node_1,90);
+    // {90.0f, 80.0f, 35.0f, 80.0f, 180-140.0f};
+    arm0->set_angle(arm0, node_4,180-140);
+    arm0->set_angle(arm0, node_3,80);
     arm0->set_angle(arm0, node_2,35);
-    arm0->set_angle(arm0, node_3,100);
+    arm0->set_angle(arm0, node_1,77.5);
+    arm0->set_angle(arm0, node_0,90);
+
+}
+
+void main_int()
+{
+    delay_init(72); //时钟频率
+    RetargetInit(&huart1);
+    K230_urat_dma_Init();
+    HAL_TIM_Base_Start_IT(&htim4); // 启动定时器并使能中断
+    conveyor = Conveyor_Device_Create();
+    conveyor->Init(conveyor);
+    arm0 = GetBotArmDevice(botarm_0);
+    arm0->Init(arm0);
+    arm0->move_joints(arm0, joint_angles_init);
+    arm0->claw_set(arm0, claw_open);
+    delay_ms(2000);
 }
