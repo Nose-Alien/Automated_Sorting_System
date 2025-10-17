@@ -1,10 +1,3 @@
-/**
-  * @file bot_arm.h
-  * @brief 机械臂接口定义与类型声明
-  * @author sleet
-  * @date 2025/10/5
-  */
-
 #ifndef BOT_ARM_H
 #define BOT_ARM_H
 
@@ -50,6 +43,7 @@ typedef struct BotArm {
     int (*move_joints)(struct BotArm *P_BotArm, float angles[]); // 只移动关节节点（不包含抓手）
     int (*smooth_set_angle)(struct BotArm *P_BotArm, node Channel, float Angle); // 平滑设置单个节点角度
     int (*coordinated_move)(struct BotArm *P_BotArm, float angles[], uint8_t num_nodes); // 协调移动多个节点
+    int (*smooth_move_to)(struct BotArm *P_BotArm, float angles[]); // 新增：平滑移动所有可移动节点（顺序移动）
 } BotArm, *P_BotArm;
 
 // 获取指定机械臂设备

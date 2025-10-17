@@ -8,15 +8,15 @@
 #include "user_main.h"
 #include "k230_uart_dma.h"
 #include "conveyor_device.h"
-void BotArm_SequentialSmoothPosture(void);
-void BotArm_SmoothClawPosture(void);
 static uint32_t TIM4_tick_ms = 0; // 静态变量，跟踪时间滴答
 P_BotArm arm0;
 P_Conveyor_Device conveyor;
 
 // 定义几个常用姿态
-float joint_angles_init[] = {90.0f, 70.0f, 35.0f, 100.0f, 40.0f};      // 初始姿态
-float joint_angles_grasp[] = {90.0f, 80.0f, 35.0f, 80.0f, 40.0f};      // 夹取姿态
+float joint_angles_grasp_init[] = {90.0f, 70.0f, 35.0f, 100.0f, 40.0f};     // 夹取初始姿态{90.0f, 70.0f, 35.0f, 100.0f, 40.0f};
+float joint_angles_grasp[] = {90.0f, 80.0f, 35.0f, 80.0f, 40.0f};      // 夹取姿态90.0f, 80.0f, 35.0f, 80.0f, 40.0f};
+float joint_angles_place_init[] = {150.0f, 70.0f, 35.0f, 100.0f, 40.0f};      // 放置初始姿态{150.0f, 70.0f, 35.0f, 100.0f, 40.0f};
+float joint_angles_place[] = {150.0f, 110.0f, 35.0f, 100.0f, 40.0f};      // 放置姿态{150.0f, 110.0f, 35.0f, 100.0f, 40.0f};
 
 
 /**
@@ -25,18 +25,10 @@ float joint_angles_grasp[] = {90.0f, 80.0f, 35.0f, 80.0f, 40.0f};      // 夹取
   */
 int user_main()
 {
-    main_int();
+    user_main_int();
     delay_ms(2000);
     while (1) {
-        arm0->coordinated_move(arm0, joint_angles_grasp, 5);
-        delay_ms(1000);
-        arm0->claw_set(arm0, claw_close);
-        delay_ms(1000);
-        arm0->claw_set(arm0, claw_open);
-        delay_ms(1000);
-        // 返回到初始姿态
-        arm0->move_joints(arm0, joint_angles_init);
-        delay_ms(1000);
+        bot_arm_Action_group();
     }
 }
 
@@ -60,7 +52,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 }
 
 
-void main_int()
+void user_main_int()
 {
     delay_init(72); //时钟频率
     RetargetInit(&huart1);
@@ -70,13 +62,31 @@ void main_int()
     conveyor->Init(conveyor);
     arm0 = GetBotArmDevice(botarm_0);
     arm0->Init(arm0);
-
     // 初始化角度记录
     for (int i = 0; i <= 4; i++) {
-        arm0->LastAngl[i] = joint_angles_init[i];
+        arm0->LastAngl[i] = joint_angles_grasp_init[i];
     }
-
-    // 使用平滑移动初始化到初始姿态
-    arm0->move_joints(arm0, joint_angles_init);
     arm0->claw_set(arm0, claw_open);
+}
+void bot_arm_Action_group(void)
+{
+    arm0->smooth_move_to(arm0, joint_angles_grasp_init);
+    delay_ms(1000);
+    arm0->smooth_move_to(arm0, joint_angles_grasp);
+    delay_ms(1000);
+
+    arm0->claw_set(arm0, claw_close);
+    delay_ms(1000);
+    // 返回到初始姿态
+    arm0->smooth_move_to(arm0, joint_angles_grasp_init);
+    delay_ms(1000);
+
+    arm0->smooth_move_to(arm0, joint_angles_place);
+    delay_ms(1000);
+
+    arm0->claw_set(arm0, claw_open);
+    delay_ms(1000);
+    // 返回到初始姿态
+    arm0->smooth_move_to(arm0, joint_angles_place_init);
+    delay_ms(1000);
 }

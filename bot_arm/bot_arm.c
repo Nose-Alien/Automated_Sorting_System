@@ -1,10 +1,3 @@
-/**
-* @file bot_arm.c
-  * @brief 机械臂控制实现（BotArm 设备与动作逻辑）
-  * @author sleet
-  * @date 2025/10/5
-  */
-
 #include "bot_arm.h"
 #include <math.h>
 
@@ -243,6 +236,49 @@ static int BotArm_CoordinatedMove(struct BotArm *P_BotArm, float target_angles[]
 }
 
 /**
+ * @brief 平滑移动所有可移动节点（顺序移动，非协调）
+ * @param P_BotArm 机械臂设备指针
+ * @param angles 目标角度数组
+ * @return 成功返回0，失败返回错误码
+ */
+static int BotArm_SmoothMoveTo(struct BotArm *P_BotArm, float angles[])
+{
+    // 参数验证
+    if (P_BotArm == NULL) {
+        return -1;
+    }
+
+    if (angles == NULL) {
+        return -2; // 角度数组为空
+    }
+
+    int which = P_BotArm->which;
+
+    if (which < 0 || which >= botarm_MAX) {
+        return -3; // 无效的机械臂标识
+    }
+
+    // 获取该机械臂的配置
+    BotArm_Config *config = &arm_configs[which];
+
+    // 移动所有标记为可移动的节点（顺序移动）
+    for (node i = node_0; i < node_MAX; i++) {
+        // 检查节点是否可移动
+        if (config->movable_nodes[i] == 0) {
+            continue; // 跳过不可移动的节点
+        }
+
+        // 使用平滑移动函数设置每个节点角度
+        int result = BotArm_SmoothSetAngle(P_BotArm, i, angles[i]);
+        if (result != 0) {
+            return result; // 某个节点设置失败，返回错误
+        }
+    }
+
+    return 0; // 所有可移动节点设置成功
+}
+
+/**
  * @brief 抓手控制实现
  * @param P_BotArm 机械臂设备指针
  * @param state 抓手状态（打开或闭合）
@@ -326,17 +362,20 @@ static int BotArm_MoveTo(struct BotArm *P_BotArm, float angles[])
     // 获取该机械臂的配置
     BotArm_Config *config = &arm_configs[which];
 
-    // 创建只包含可移动节点的目标角度数组
-    float movable_angles[node_MAX];
-    uint8_t movable_count = 0;
-
+    // 移动所有标记为可移动的节点
     for (node i = node_0; i < node_MAX; i++) {
-        if (config->movable_nodes[i] == 1) {
-            movable_angles[movable_count++] = angles[i];
+        // 检查节点是否可移动
+        if (config->movable_nodes[i] == 0) {
+            continue; // 跳过不可移动的节点
+        }
+
+        int result = BotArm_SetAngle(P_BotArm, i, angles[i]);
+        if (result != 0) {
+            return result; // 某个节点设置失败，返回错误
         }
     }
 
-    return BotArm_CoordinatedMove(P_BotArm, movable_angles, movable_count);
+    return 0; // 所有可移动节点设置成功
 }
 
 // ============================================================================
@@ -355,6 +394,7 @@ static BotArm BotArmDevices[] = {
         BotArm_MoveJoints, // 移动关节函数
         BotArm_SmoothSetAngle, // 平滑设置角度函数
         BotArm_CoordinatedMove, // 协调移动函数
+        BotArm_SmoothMoveTo, // 平滑移动所有可移动节点函数
     },
 };
 
@@ -399,5 +439,8 @@ void BotArm_Test(void)
         // 移动所有可移动节点（使用协调平滑移动）
         float all_angles[] = {90.0f, 45.0f, 35.0f, 60.0f, 40.0f, 999.0f}; // node_5的值会被忽略
         arm0->move_to(arm0, all_angles);
+
+        // 使用新的平滑移动函数（顺序移动）
+        arm0->smooth_move_to(arm0, all_angles);
     }
 }

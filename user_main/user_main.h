@@ -20,8 +20,8 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim6;
 
 int user_main();
-void main_int();
-void BotArm_ClawPosture(void);
+void user_main_int();
+  void bot_arm_Action_group(void);
 
 #ifdef __cplusplus
 }
