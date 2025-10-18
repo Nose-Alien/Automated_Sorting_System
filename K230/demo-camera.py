@@ -20,7 +20,7 @@ uart = UART(UART.UART2, 115200) #设置串口号2和波特率
 #uart.write('Hello 01Studio!\n') #发送一条数据
 
 # 这里为自动生成内容，自定义场景请修改为您自己的模型路径、标签名称、模型输入大小
-kmodel_path="/sdcard/yolo11s_det_640.kmodel"
+kmodel_path="/sdcard/yolo11m_det_640.kmodel"
 labels = {0: 'apple', 1: 'strawberry', 2: 'watermelon'}
 model_input_size = [640, 640]
 # 显示模式，可以选择"hdmi"、"lcd3_5"(3.5寸mipi屏)和"lcd2_4"(2.4寸mipi屏)
