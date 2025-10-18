@@ -29,7 +29,13 @@ int user_main()
     delay_ms(2000);
     conveyor->Forward(conveyor, CONVEYOR_DEFAULT_SPEED);
     while (1) {
-        bot_arm_Action_group();
+        conveyor->Forward(conveyor, CONVEYOR_DEFAULT_SPEED);
+        if (Apple == 1) {
+            conveyor->Stop(conveyor);
+            bot_arm_Action_group();  // 执行机械臂动作
+            Apple = 0;               // 重置标志
+            // delay_ms(1000);          // 等待一段时间
+        }
     }
 }
 
@@ -64,11 +70,13 @@ void user_main_int()
     arm0 = GetBotArmDevice(botarm_0);
     arm0->Init(arm0);
     // 初始化角度记录
+    // printf("Woid");
     for (int i = 0; i <= 4; i++) {
-        arm0->LastAngl[i] = joint_angles_grasp_init[i];
+        arm0->LastAngl[i] = joint_angles_place_init[i];
     }
     arm0->claw_set(arm0, claw_open);
-    arm0->smooth_move_to(arm0, joint_angles_grasp_init);
+    arm0->smooth_move_to(arm0, joint_angles_place_init);
+
 }
 void bot_arm_Action_group(void)
 {

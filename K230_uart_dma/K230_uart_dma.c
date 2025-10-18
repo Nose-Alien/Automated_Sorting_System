@@ -22,6 +22,12 @@ uint8_t data[200];
 uint8_t Apple = 0, Strawberry = 0, Watermelon = 0;
 K230Data k230_data;
 
+// 目标区域配置 (可以根据需要调整)
+#define TARGET_AREA_X_MIN 300   // 目标区域左边界
+#define TARGET_AREA_X_MAX 400   // 目标区域右边界
+#define TARGET_AREA_Y_MIN 50   // 目标区域上边界
+#define TARGET_AREA_Y_MAX 400   // 目标区域下边界
+
 // 根据类别ID获取类别名称
 const char *get_class_name(int class_id)
 {
@@ -93,21 +99,35 @@ void ParseK230Data(char *data_str)
     }
     printf("==============================\n");
 
-    //这里可以添加您的业务逻辑
+    // 添加位置判断逻辑
     for (int i = 0; i < detection_index && i < k230_data.total_count; i++) {
-        switch (k230_data.detections[i].class_id) {
-            case 0: // apple
-                Apple=1;
-                printf("Apple detected - taking action...\n");
-                break;
-            case 1: // strawberry
-                Strawberry=1;
-                printf("Strawberry detected - taking action...\n");
-                break;
-            case 2: // watermelon
-                Watermelon=1;
-                printf("Watermelon detected - taking action...\n");
-                break;
+        int center_x = k230_data.detections[i].x + k230_data.detections[i].width / 2;
+        int center_y = k230_data.detections[i].y + k230_data.detections[i].height / 2;
+
+        printf("Target %d center: (%d, %d)\n", i+1, center_x, center_y);
+
+        // 判断物体是否在目标区域内
+        if (center_x > TARGET_AREA_X_MIN && center_x < TARGET_AREA_X_MAX &&
+            center_y > TARGET_AREA_Y_MIN && center_y < TARGET_AREA_Y_MAX) {
+
+            printf("Target %d is in target area!\n", i+1);
+
+            switch (k230_data.detections[i].class_id) {
+                case 0: // apple
+                    Apple = 1;
+                    printf("Apple detected in target area - taking action...\n");
+                    break;
+                case 1: // strawberry
+                    Strawberry = 1;
+                    printf("Strawberry detected in target area - taking action...\n");
+                    break;
+                case 2: // watermelon
+                    Watermelon = 1;
+                    printf("Watermelon detected in target area - taking action...\n");
+                    break;
+            }
+        } else {
+            printf("Target %d is NOT in target area\n", i+1);
         }
     }
 }
