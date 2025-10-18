@@ -53,7 +53,7 @@ else:
 display_size = pl.get_display_size()
 
 # 初始化YOLO11实例
-confidence_threshold = 0.85  # 置信度
+confidence_threshold = 0.75  # 置信度
 nms_threshold = 0.45
 yolo = YOLO11(
     task_type="detect",
