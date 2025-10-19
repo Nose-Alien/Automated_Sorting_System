@@ -24,9 +24,9 @@ K230Data k230_data;
 
 // 目标区域配置 (可以根据需要调整)
 #define TARGET_AREA_X_MIN 300   // 目标区域左边界
-#define TARGET_AREA_X_MAX 400   // 目标区域右边界
-#define TARGET_AREA_Y_MIN 50   // 目标区域上边界
-#define TARGET_AREA_Y_MAX 400   // 目标区域下边界
+#define TARGET_AREA_X_MAX 475   // 目标区域右边界
+#define TARGET_AREA_Y_MIN 0   // 目标区域上边界
+#define TARGET_AREA_Y_MAX 480   // 目标区域下边界
 
 // 根据类别ID获取类别名称
 const char *get_class_name(int class_id)

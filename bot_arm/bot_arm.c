@@ -41,9 +41,9 @@ static BotArm_Config arm_configs[] = {
         {1, 1, 1, 1, 1, 0}, // 可移动节点标记：node_5不可通过move_to移动
 
         // 新增平滑移动参数
-        2000,    // move_duration_ms: 总移动时间2秒
-        50,      // update_interval_ms: 每50ms更新一次
-        5.0f     // max_angle_step: 最大单步角度变化5度
+        1000,    // move_duration_ms: 总移动时间2秒
+        25,      // update_interval_ms: 每50ms更新一次
+        2.0f     // max_angle_step: 最大单步角度变化5度
     },
 };
 
