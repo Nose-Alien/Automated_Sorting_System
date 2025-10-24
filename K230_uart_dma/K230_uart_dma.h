@@ -40,8 +40,8 @@ extern "C" {
     } K230Data;
 
     // 全局变量声明
-    extern uint8_t data[200];
-    extern K230Data k230_data;
+    extern uint8_t k230_usar_data[200];
+    extern K230Data k230;
     extern uint8_t Apple, Strawberry, Watermelon;
     // 函数声明
     void K230_urat_dma_Init(void);

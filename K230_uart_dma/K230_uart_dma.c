@@ -18,9 +18,9 @@ const char *class_names[] = {
 };
 
 // 全局变量定义
-uint8_t data[200];
+uint8_t k230_usar_data[200];
 uint8_t Apple = 0, Strawberry = 0, Watermelon = 0;
-K230Data k230_data;
+K230Data k230;
 
 // 目标区域配置 (可以根据需要调整)
 #define TARGET_AREA_X_MIN 300   // 目标区域左边界
@@ -40,7 +40,7 @@ const char *get_class_name(int class_id)
 void ParseK230Data(char *data_str)
 {
     // 初始化数据结构
-    memset(&k230_data, 0, sizeof(k230_data));
+    memset(&k230, 0, sizeof(k230));
 
     char *token = strtok(data_str, ";");
     int detection_index = 0;
@@ -53,28 +53,28 @@ void ParseK230Data(char *data_str)
         // 根据前缀解析不同类型的数据
         if (strncmp(token, "D:", 2) == 0) {
             // 解析总数量
-            k230_data.total_count = atoi(token + 2);
+            k230.total_count = atoi(token + 2);
         } else if (strncmp(token, "B:", 2) == 0) {
             // 开始新的目标检测结果
             current_detection = detection_index;
             if (current_detection < 10) {
                 sscanf(token + 2, "%d,%d,%d,%d",
-                       &k230_data.detections[current_detection].x,
-                       &k230_data.detections[current_detection].y,
-                       &k230_data.detections[current_detection].width,
-                       &k230_data.detections[current_detection].height);
+                       &k230.detections[current_detection].x,
+                       &k230.detections[current_detection].y,
+                       &k230.detections[current_detection].width,
+                       &k230.detections[current_detection].height);
             }
         } else if (strncmp(token, "C:", 2) == 0) {
             // 解析类别信息
             if (current_detection >= 0 && current_detection < 10) {
-                k230_data.detections[current_detection].class_id = atoi(token + 2);
-                k230_data.detections[current_detection].class_name = get_class_name(
-                    k230_data.detections[current_detection].class_id);
+                k230.detections[current_detection].class_id = atoi(token + 2);
+                k230.detections[current_detection].class_name = get_class_name(
+                    k230.detections[current_detection].class_id);
             }
         } else if (strncmp(token, "S:", 2) == 0) {
             // 解析置信度
             if (current_detection >= 0 && current_detection < 10) {
-                k230_data.detections[current_detection].confidence = atof(token + 2);
+                k230.detections[current_detection].confidence = atof(token + 2);
                 detection_index++; // 完成一个目标的解析，移动到下一个
                 current_detection = -1; // 重置当前目标索引
             }
@@ -85,24 +85,24 @@ void ParseK230Data(char *data_str)
 
     // 打印解析结果（调试用）
     printf("=== K230 Detection Results ===\n");
-    printf("Total detections: %d\n", k230_data.total_count);
+    printf("Total detections: %d\n", k230.total_count);
 
-    for (int i = 0; i < detection_index && i < k230_data.total_count; i++) {
+    for (int i = 0; i < detection_index && i < k230.total_count; i++) {
         printf("Target %d: %s (Confidence: %.2f%%) at (%d, %d) size %dx%d\n",
                i + 1,
-               k230_data.detections[i].class_name,
-               k230_data.detections[i].confidence * 100,
-               k230_data.detections[i].x,
-               k230_data.detections[i].y,
-               k230_data.detections[i].width,
-               k230_data.detections[i].height);
+               k230.detections[i].class_name,
+               k230.detections[i].confidence * 100,
+               k230.detections[i].x,
+               k230.detections[i].y,
+               k230.detections[i].width,
+               k230.detections[i].height);
     }
     printf("==============================\n");
 
     // 添加位置判断逻辑
-    for (int i = 0; i < detection_index && i < k230_data.total_count; i++) {
-        int center_x = k230_data.detections[i].x + k230_data.detections[i].width / 2;
-        int center_y = k230_data.detections[i].y + k230_data.detections[i].height / 2;
+    for (int i = 0; i < detection_index && i < k230.total_count; i++) {
+        int center_x = k230.detections[i].x + k230.detections[i].width / 2;
+        int center_y = k230.detections[i].y + k230.detections[i].height / 2;
 
         printf("Target %d center: (%d, %d)\n", i+1, center_x, center_y);
 
@@ -112,7 +112,7 @@ void ParseK230Data(char *data_str)
 
             printf("Target %d is in target area!\n", i+1);
 
-            switch (k230_data.detections[i].class_id) {
+            switch (k230.detections[i].class_id) {
                 case 0: // apple
                     Apple = 1;
                     printf("Apple detected in target area - taking action...\n");
@@ -134,22 +134,27 @@ void ParseK230Data(char *data_str)
 
 void K230_urat_dma_Init(void)
 {
-    HAL_UARTEx_ReceiveToIdle_DMA(&huart2, data, sizeof(data));
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart2, k230_usar_data, sizeof(k230_usar_data));
     __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
 }
 
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
-{
-    if (huart == &huart2) {
-        // 添加字符串结束符以确保安全解析
-        if (Size < sizeof(data)) {
-            data[Size] = '\0';
-        } else {
-            data[sizeof(data) - 1] = '\0';
-        }
-        ParseK230Data((char *) data);
-        // HAL_UART_Transmit_DMA(&huart2, data, Size);
-        HAL_UARTEx_ReceiveToIdle_DMA(&huart2, data, sizeof(data));
-        __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
-    }
-}
+// void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+// {
+//     if (huart == &huart2) {
+//         // 添加字符串结束符以确保安全解析
+//         if (Size < sizeof(data)) {
+//             data[Size] = '\0';
+//         } else {
+//             data[sizeof(data) - 1] = '\0';
+//         }
+//         ParseK230Data((char *) data);
+//         // HAL_UART_Transmit_DMA(&huart2, data, Size);
+//         HAL_UARTEx_ReceiveToIdle_DMA(&huart2, data, sizeof(data));
+//         __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
+//     }
+//     if (huart == &huart3) {
+//         HAL_UART_Transmit_DMA(&huart3, data, Size);
+//         HAL_UARTEx_ReceiveToIdle_DMA(&huart3, data, sizeof(data));
+//         __HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
+//     }
+// }
