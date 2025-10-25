@@ -37,6 +37,9 @@
 * `DWIN_uart/`：DWIN 触摸屏命令解析与显示控制
 * `uart/`：串口重定向（Retarget）实现
 * `user_main/`：业务逻辑入口（分拣流程控制）
+* `PCB/`：PCB 设计文件（立创EDA专业版）
+* `DWIN_Project/`：DWIN 触摸屏项目文件
+* `K230/`：K230 YOLO模型与示例
 
 # 硬件连接（建议）
 
