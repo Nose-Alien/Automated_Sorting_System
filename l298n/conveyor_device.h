@@ -1,7 +1,7 @@
 /**
   * @file conveyor_device.h
-  * @brief 传送带设备抽象层
-  * @author Nose_Alien
+  * @brief 传送带设备抽象层头文件
+  * @author sleet
   * @date 2025/10/10
   */
 

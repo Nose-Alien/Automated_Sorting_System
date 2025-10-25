@@ -99,7 +99,7 @@ void DwinWriteAppleState(int state,uint8_t xValue,uint8_t yValue,uint8_t count);
 void DwinWriteStrawberryState(int state,uint16_t xValue,uint16_t yValue,uint16_t count);
 void DwinWriteWatermelonState(int state,uint16_t xValue,uint16_t yValue,uint16_t count);
 void DwinWriteSystemState(int state);
-void DwinWriteSum(int sum);
+void DwinWriteSum(uint32_t sum); // 改为 uint32_t 避免窄化转换
 void DwinWriteClawState(int state);
 void DwinWriteConveyorState(int state,uint16_t speed);
 void DwinWriteNodeState(int node,uint16_t angle);

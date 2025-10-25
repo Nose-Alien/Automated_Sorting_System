@@ -1,9 +1,9 @@
 /**
-* @file K230_uart_dma.c
-  * @brief K230 串口 DMA 数据解析与回调实现
-  * @author Nose_Alien
-  * @date 2025/9/30
-  */
+@file K230_uart_dma.c
+@brief K230 串口 DMA 数据解析与回调实现（用户注释版）
+@author sleet
+@date 2025/9/30
+*/
 
 #include "k230_uart_dma.h"
 #include <string.h>
@@ -22,13 +22,17 @@ uint8_t k230_usar_data[200];
 uint8_t K230_Apple_flag = 0, K230_Strawberry_flag = 0, K230_Watermelon_flag = 0;
 K230Data k230;
 
-// 目标区域配置 (可以根据需要调整)
+// 目标区域配置 (可根据需要调整)
 #define TARGET_AREA_X_MIN 300   // 目标区域左边界
 #define TARGET_AREA_X_MAX 475   // 目标区域右边界
 #define TARGET_AREA_Y_MIN 0     // 目标区域上边界
 #define TARGET_AREA_Y_MAX 480   // 目标区域下边界
 
-// 根据类别ID获取类别名称
+/**
+ * @brief 根据 class_id 返回类别名称（只读）
+ * @param class_id 类别索引
+ * @return const char* 对应的类名字符串（若越界返回 "unknown"）
+ */
 const char *get_class_name(int class_id)
 {
     if (class_id >= 0 && class_id < CLASS_COUNT) {
@@ -37,6 +41,11 @@ const char *get_class_name(int class_id)
     return "unknown";
 }
 
+/**
+ * @brief 解析来自 K230 的以分号分隔的检测字符串
+ * @param data_str 输入的原始字符串（此函数将使用 strtok 修改其内容）
+ * @note 解析后会更新全局结构体 k230 与 latest_detections，并设置对应的标志位
+ */
 void ParseK230Data(char *data_str)
 {
     // 初始化数据结构
@@ -44,18 +53,18 @@ void ParseK230Data(char *data_str)
 
     char *token = strtok(data_str, ";");
     int detection_index = 0;
-    int current_detection = -1; // 当前正在处理的目标索引
+    int current_detection = -1; // 当前正在处理的检测索引
 
     while (token != NULL && detection_index < 10) {
         // 去除首尾空格
         while (*token == ' ') token++;
 
-        // 根据前缀解析不同类型的数据
+        // 根据前缀解析不同字段
         if (strncmp(token, "D:", 2) == 0) {
-            // 解析总数量
+            // 总数量
             k230.total_count = atoi(token + 2);
         } else if (strncmp(token, "B:", 2) == 0) {
-            // 开始新的目标检测结果
+            // 新检测块，形如 B:x,y,w,h
             current_detection = detection_index;
             if (current_detection < 10) {
                 sscanf(token + 2, "%d,%d,%d,%d",
@@ -65,35 +74,34 @@ void ParseK230Data(char *data_str)
                        &k230.detections[current_detection].height);
             }
         } else if (strncmp(token, "C:", 2) == 0) {
-            // 解析类别信息
+            // class id
             if (current_detection >= 0 && current_detection < 10) {
                 k230.detections[current_detection].class_id = atoi(token + 2);
                 k230.detections[current_detection].class_name = get_class_name(
                     k230.detections[current_detection].class_id);
             }
         } else if (strncmp(token, "S:", 2) == 0) {
-            // 解析置信度
+            // confidence
             if (current_detection >= 0 && current_detection < 10) {
                 k230.detections[current_detection].confidence = atof(token + 2);
 
-                // 将检测结果存储到对应的固定位置
+                // 将检测结果保存到对应 class 的 latest_detections
                 int class_id = k230.detections[current_detection].class_id;
-                if (class_id >= 0 && class_id < 3) {
-                    // 覆盖存储到对应的类别位置
+                if (class_id >= 0 && class_id < CLASS_COUNT) {
                     memcpy(&k230.latest_detections[class_id],
                            &k230.detections[current_detection],
                            sizeof(DetectionResult));
                 }
 
-                detection_index++; // 完成一个目标的解析，移动到下一个
-                current_detection = -1; // 重置当前目标索引
+                detection_index++; // 完成一个对象的解析
+                current_detection = -1;
             }
         }
 
         token = strtok(NULL, ";");
     }
 
-    // 打印解析结果（调试用）
+    // 调试输出解析结果（可选）
     printf("=== K230 Detection Results ===\n");
     printf("Total detections: %d\n", k230.total_count);
 
@@ -109,14 +117,13 @@ void ParseK230Data(char *data_str)
     }
     printf("==============================\n");
 
-    // 添加位置判断逻辑
+    // 判断每个目标是否落入目标区域，若是则设置对应的 flag
     for (int i = 0; i < detection_index && i < k230.total_count; i++) {
         int center_x = k230.detections[i].x + k230.detections[i].width / 2;
         int center_y = k230.detections[i].y + k230.detections[i].height / 2;
 
         printf("Target %d center: (%d, %d)\n", i+1, center_x, center_y);
 
-        // 判断物体是否在目标区域内
         if (center_x > TARGET_AREA_X_MIN && center_x < TARGET_AREA_X_MAX &&
             center_y > TARGET_AREA_Y_MIN && center_y < TARGET_AREA_Y_MAX) {
 
@@ -142,6 +149,10 @@ void ParseK230Data(char *data_str)
     }
 }
 
+/**
+ * @brief 初始化 K230 串口的 DMA 空闲接收（启动接收）
+ * @note 该函数会调用 HAL_UARTEx_ReceiveToIdle_DMA 并关闭半传输中断
+ */
 void K230_urat_dma_Init(void)
 {
     HAL_UARTEx_ReceiveToIdle_DMA(&huart2, k230_usar_data, sizeof(k230_usar_data));

@@ -1,9 +1,9 @@
 /**
-  * @file user_main.c
-  * @brief 用户主程序的入口文件
-  * @author Nose_Alien
-  * @date 2025/9/30
-  */
+@file user_main.c
+@brief 用户主程序的入口文件
+@author sleet
+@date 2025/9/30
+*/
 
 #include "user_main.h"
 #include "k230_uart_dma.h"
@@ -23,8 +23,9 @@ float joint_angles_place[] = {150.0f, 110.0f, 35.0f, 100.0f, 40.0f};      // 放
 
 
 /**
-  * @brief 主程序入口函数
-  * @return int
+  * @brief 主程序入口函数（仅供应用调用，真正的 main 在 Core/Src/main.c）
+  * @note 本函数会调用初始化并进入主循环 run()
+  * @return int 程序返回值（通常不会返回）
   */
 int user_main()
 {
@@ -35,6 +36,10 @@ int user_main()
     }
 }
 
+/**
+  * @brief 主循环逻辑，负责协调传送带、机械臂与屏幕交互
+  * @note 该函数应被频繁调用以响应外设状态
+  */
 void run()
 {
     if (DWIN_SYSTEM_flag==1) {
@@ -103,6 +108,10 @@ void run()
         }
 }
 
+/**
+  * @brief 用户程序初始化函数，负责外设与模块的初始化
+  * @note 请不要在此处添加长时间阻塞的操作
+  */
 void user_main_int()
 {
     delay_init(72); //时钟频率
@@ -126,6 +135,9 @@ void user_main_int()
     // arm0->smooth_move_to(arm0, joint_angles_place_init);
 
 }
+/**
+  * @brief 机械臂动作序列：抓取-放置流程
+  */
 void bot_arm_Action_group(void)
 {
 
@@ -150,6 +162,9 @@ void bot_arm_Action_group(void)
     delay_ms(1000);
 }
 
+/**
+  * @brief 将内部状态更新到 DWIN 触摸屏（数值/开关/角度）
+  */
 void DWIN_update(void)
 {
     // uint8_t apple_x = 0, apple_y = 0;
@@ -184,6 +199,10 @@ void DWIN_update(void)
     DwinWriteNodeState(ADDR_NODE4,(uint16_t)arm0->LastAngl[4]);
 }
 
+/**
+  * @brief 定时器回调（1ms 或者根据工程配置）
+  * @param htim 指向触发中断的定时器句柄
+  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim == &htim4) {
@@ -205,6 +224,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
 }
 
+/**
+  * @brief UART 空闲接收回调（使用 HAL_UARTEx_ReceiveToIdle_DMA）
+  * @param huart 指示哪个 UART 触发
+  * @param Size 这次接收的数据长度
+  */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     if (huart == &huart2) {

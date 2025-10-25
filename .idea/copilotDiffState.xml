@@ -3,6 +3,14 @@
   <component name="CopilotDiffPersistence">
     <option name="pendingDiffs">
       <map>
+        <entry key="$PROJECT_DIR$/.gitignore">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/.gitignore" />
+              <option name="updatedContent" value="# Build artifacts&#10;cmake-build-debug/&#10;build/&#10;CMakeFiles/&#10;CMakeCache.txt&#10;Makefile&#10;cmake_install.cmake&#10;Automated_Sorting_System.map&#10;Automated_Sorting_System.hex&#10;Automated_Sorting_System.bin&#10;Automated_Sorting_System.elf&#10;&#10;# IDE folders&#10;.vscode/&#10;.idea/&#10;*.iml&#10;&#10;# Mac&#10;.DS_Store&#10;&#10;# Temporary files&#10;*.o&#10;*.obj&#10;*.d&#10;*.tmp&#10;*.log&#10;*.swp&#10;&#10;# STM32Cube generated files to ignore (if you want to keep them, remove these)&#10;*.ioc.user&#10;&#10;# Python&#10;__pycache__/&#10;*.pyc&#10;&#10;# Other&#10;*.bak&#10;*.old&#10;&#10;# Ignore K210/other model outputs&#10;kmodel/&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/K230_urat_dma/K230_urat_dma.c">
           <value>
             <PendingDiffInfo>

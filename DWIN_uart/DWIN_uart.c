@@ -1,6 +1,10 @@
-//
-// Created by nose on 2025/10/24.
-//
+/**
+@file DWIN_uart.c
+@brief DWIN 触摸屏串口通信与命令处理实现（用户注释版）
+@author sleet
+@date 2025/9/30
+*/
+
 #include "DWIN_uart.h"
 
 uint8_t DWIN_usar_data[200];
@@ -9,7 +13,13 @@ uint8_t DWIN_SYSTEM_flag=0, DWIN_CLAW_flag=1, DWIN_CONVEYOR_flag=0;
 uint8_t DWIN__CLEAR_flag=0, DWIN__SETTINGS_flag=0, DWIN__RETURN_flag=0;
 uint8_t DWIN_Speed_value=0;
 
-// 写苹果
+/**
+ * @brief 将苹果相关状态写入 DWIN（开关 + 坐标 + 计数）
+ * @param state ON/OFF
+ * @param xValue X 坐标
+ * @param yValue Y 坐标
+ * @param count 数量
+ */
 void DwinWriteAppleState(int state,uint8_t xValue,uint8_t yValue,uint8_t count)
 {
     if (state == ON) {
@@ -30,7 +40,9 @@ void DwinWriteAppleState(int state,uint8_t xValue,uint8_t yValue,uint8_t count)
     HAL_UART_Transmit(&huart3, dwin_count, sizeof(dwin_count),DWIN_UART_time);
 }
 
-// 草莓状态控制
+/**
+ * @brief 将草莓状态写入 DWIN（开关 + 坐标 + 计数）
+ */
 void DwinWriteStrawberryState(int state,uint16_t xValue,uint16_t yValue,uint16_t count)
 {
     if (state == ON) {
@@ -50,7 +62,9 @@ void DwinWriteStrawberryState(int state,uint16_t xValue,uint16_t yValue,uint16_t
     uint8_t dwin_count[] = {DWIN_HEADER_1, DWIN_HEADER_2, 0x05, DWIN_CMD_WRITE, ADDR_Strawberry, ADDR_count, 0x00, count};
     HAL_UART_Transmit(&huart3, dwin_count, sizeof(dwin_count),DWIN_UART_time);
 }
-// 西瓜状态控制
+/**
+ * @brief 将西瓜状态写入 DWIN（开关 + 坐标 + 计数）
+ */
 void DwinWriteWatermelonState(int state,uint16_t xValue,uint16_t yValue,uint16_t count)
 {
     if (state == ON) {
@@ -70,7 +84,9 @@ void DwinWriteWatermelonState(int state,uint16_t xValue,uint16_t yValue,uint16_t
     uint8_t dwin_count[] = {DWIN_HEADER_1, DWIN_HEADER_2, 0x05, DWIN_CMD_WRITE, ADDR_Watermelon, ADDR_count, 0x00, count};
     HAL_UART_Transmit(&huart3, dwin_count, sizeof(dwin_count),DWIN_UART_time);
 }
-// 系统状态控制
+/**
+ * @brief 写入系统开关状态到 DWIN
+ */
 void DwinWriteSystemState(int state)
 {
     if (state == ON) {
@@ -82,14 +98,18 @@ void DwinWriteSystemState(int state)
         HAL_UART_Transmit(&huart3, dwinCommand, sizeof(dwinCommand),DWIN_UART_time);
     }
 }
-//  识别写总数
-void DwinWriteSum(int sum)
+/**
+ * @brief 写入总数到 DWIN
+ */
+void DwinWriteSum(uint32_t sum)
 {
-        uint8_t dwinCommand[] = {DWIN_HEADER_1, DWIN_HEADER_2, 0x05, DWIN_CMD_WRITE, ADDR_SUM, 0x10, 0x00, sum};
+        uint8_t dwinCommand[] = {DWIN_HEADER_1, DWIN_HEADER_2, 0x05, DWIN_CMD_WRITE, ADDR_SUM, 0x10, 0x00, (uint8_t)sum};
         HAL_UART_Transmit(&huart3, dwinCommand, sizeof(dwinCommand),DWIN_UART_time);
 }
 
-// 机械爪控制
+/**
+ * @brief 写入机械爪状态
+ */
 void DwinWriteClawState(int state)
 {
     if (state == ON) {
@@ -101,7 +121,9 @@ void DwinWriteClawState(int state)
         HAL_UART_Transmit(&huart3, dwinCommand, sizeof(dwinCommand),DWIN_UART_time);
     }
 }
-// 传送带控制
+/**
+ * @brief 写入传送带状态与速度
+ */
 void DwinWriteConveyorState(int state,uint16_t speed)
 {
     if (state == ON) {
@@ -115,12 +137,22 @@ void DwinWriteConveyorState(int state,uint16_t speed)
     uint8_t dwin_speed[] = {DWIN_HEADER_1, DWIN_HEADER_2, 0x05, DWIN_CMD_WRITE, ADDR_SPEED, 0x00, 0x00, speed};
     HAL_UART_Transmit(&huart3, dwin_speed, sizeof(dwin_speed),DWIN_UART_time);
 }
+/**
+ * @brief 写入某个节点角度到 DWIN
+ */
 void DwinWriteNodeState(int node,uint16_t angle)
 {
     uint8_t dwin_angle[] = {DWIN_HEADER_1, DWIN_HEADER_2, 0x05, DWIN_CMD_WRITE, node, 0x00, 0x00, angle};
     HAL_UART_Transmit(&huart3, dwin_angle, sizeof(dwin_angle),DWIN_UART_time);
 }
 
+/**
+ * @brief 解析从 DWIN 接收到的数据并填充 dwin_data
+ * @param data 接收缓冲区
+ * @param size 接收长度
+ * @param dwin_data 输出结构体指针
+ * @return 1 成功解析，0 失败
+ */
 int DWIN_Parse_Data(uint8_t *data, uint16_t size, DWIN_Data_t *dwin_data)
 {
     // 检查帧头和最小长度
@@ -144,7 +176,7 @@ int DWIN_Parse_Data(uint8_t *data, uint16_t size, DWIN_Data_t *dwin_data)
 
     switch (cmd) {
         case DWIN_CMD_READ: {
-            // 读指令：屏幕触控发送的指令
+            // 读指令：屏幕触控发送的命令
             if (data_len >= 4) {
                 uint8_t read_len = data[6]; // 读取的数据长度
 
@@ -195,7 +227,7 @@ int DWIN_Parse_Data(uint8_t *data, uint16_t size, DWIN_Data_t *dwin_data)
                         }
                         break;
 
-                    // 夹爪控制
+                    // 爪子控制
                     case 0x2000:
                         if (key_value == KEY_VALUE_CLAW_ON) {
                             dwin_data->event = DWIN_EVENT_CLAW_ON;
@@ -204,7 +236,7 @@ int DWIN_Parse_Data(uint8_t *data, uint16_t size, DWIN_Data_t *dwin_data)
                         }
                         break;
 
-                    // 关节控制
+                    // 节点角度控制
                     case 0x2100:
                         dwin_data->event = DWIN_EVENT_NODE0_CHANGED;
                         dwin_data->node_angles[0] = (uint8_t)key_value;
@@ -262,55 +294,50 @@ int DWIN_Parse_Data(uint8_t *data, uint16_t size, DWIN_Data_t *dwin_data)
     return 1;
 }
 
-// 事件处理函数
+/**
+ * @brief 根据解析出的事件更新系统状态变量并在必要时打印日志
+ * @param dwin_data 已解析的事件数据
+ */
 void DWIN_Process_Event(DWIN_Data_t *dwin_data)
 {
     switch (dwin_data->event) {
         case DWIN_EVENT_APPLE_DETECTED_ON:
             printf("DWIN_Apple_flag=1\n");
             DWIN_Apple_flag=1;
-            // 设置你的Apple标志
             break;
 
         case DWIN_EVENT_APPLE_DETECTED_OFF:
             printf("DWIN_Apple_flag=0\n");
             DWIN_Apple_flag=0;
-            // 设置你的Apple标志
             break;
 
         case DWIN_EVENT_STRAWBERRY_DETECTED_ON:
             printf("DWIN_Strawberry_flag=1\n");
             DWIN_Strawberry_flag=1;
-            // 处理草莓检测
             break;
         case DWIN_EVENT_STRAWBERRY_DETECTED_OFF:
             printf("DWIN_Strawberry_flag=0\n");
             DWIN_Strawberry_flag=0;
-            // 处理草莓检测
             break;
 
         case DWIN_EVENT_WATERMELON_DETECTED_ON:
             printf("DWIN_Watermelon_flag=1\n");
             DWIN_Watermelon_flag=1;
-            // 处理西瓜检测
             break;
 
         case DWIN_EVENT_WATERMELON_DETECTED_OFF:
             printf("DWIN_Watermelon_flag=0\n");
             DWIN_Watermelon_flag=0;
-            // 处理西瓜检测
             break;
 
         case DWIN_EVENT_SYSTEM_ON:
             printf("System ON\n");
             DWIN_SYSTEM_flag=1;
-            // 启动系统
             break;
 
         case DWIN_EVENT_SYSTEM_OFF:
             printf("System OFF\n");
             DWIN_SYSTEM_flag=0;
-            // 停止系统
             break;
 
         case DWIN_EVENT_CLAW_ON:
@@ -349,7 +376,6 @@ void DWIN_Process_Event(DWIN_Data_t *dwin_data)
                 printf("Node %d angle: %d\n", node_num, dwin_data->node_angles[node_num]);
 
                 // 这里可以添加关节控制逻辑
-                // 注意：需要将0-64的范围转换到实际角度
             }
             break;
 
@@ -359,7 +385,6 @@ void DWIN_Process_Event(DWIN_Data_t *dwin_data)
             Strawberry_Count=0;
             Watermelon_Count=0;
             Sum=0;
-            // DWIN__CLEAR_flag=1;
             break;
 
         case DWIN_EVENT_SETTINGS:
@@ -378,12 +403,18 @@ void DWIN_Process_Event(DWIN_Data_t *dwin_data)
     }
 }
 
+/**
+ * @brief 初始化 DWIN 串口 DMA 接收（启动空闲接收）
+ */
 void DWIN_urat_dma_Init(void)
 {
     HAL_UARTEx_ReceiveToIdle_DMA(&huart3, DWIN_usar_data, sizeof(DWIN_usar_data));
     __HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
 }
 
+/**
+ * @brief 测试用的 DWIN 写命令演示（仅用于本地测试）
+ */
 void DWIN_urat_dma_test(void)
 {
     // 你现有的测试代码

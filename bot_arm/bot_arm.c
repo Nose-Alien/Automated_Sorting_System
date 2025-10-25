@@ -1,7 +1,7 @@
 /**
 * @file bot_arm.c
-  * @brief 机械臂设备抽象层
-  * @author Nose_Alien
+  * @brief 机械臂设备抽象层实现
+  * @author sleet
   * @date 2025/10/5
   */
 

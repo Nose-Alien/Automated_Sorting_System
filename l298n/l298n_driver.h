@@ -1,7 +1,7 @@
 /**
   * @file l298n_driver.h
   * @brief L298N底层驱动程序
-  * @author Nose_Alien
+  * @author sleet
   * @date 2025/10/10
   */
 
