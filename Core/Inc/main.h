@@ -45,6 +45,7 @@ extern "C" {
 #include "driver_uart.h"
 #include <math.h>
 #include "DWIN_uart.h"
+#include "stdbool.h"
 
 /* USER CODE END Includes */
 

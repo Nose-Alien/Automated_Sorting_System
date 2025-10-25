@@ -16,8 +16,6 @@
 extern "C" {
 #endif
 
-    // 先定义结构体，再声明使用它们的变量和函数
-
     // 类别标签映射声明
     extern const char* class_names[];
 
@@ -36,13 +34,15 @@ extern "C" {
 
     typedef struct {
         int total_count;                    // 总目标数量
-        DetectionResult detections[10];     // 检测结果数组
+        DetectionResult detections[10];     // 检测结果数组（原始数据，最多10个）
+        DetectionResult latest_detections[3]; // 每个类别的最新检测结果：[0]=苹果, [1]=草莓, [2]=西瓜
     } K230Data;
 
     // 全局变量声明
     extern uint8_t k230_usar_data[200];
     extern K230Data k230;
-    extern uint8_t Apple, Strawberry, Watermelon;
+    extern uint8_t K230_Apple_flag, K230_Strawberry_flag, K230_Watermelon_flag;
+
     // 函数声明
     void K230_urat_dma_Init(void);
     void ParseK230Data(char *data_str);

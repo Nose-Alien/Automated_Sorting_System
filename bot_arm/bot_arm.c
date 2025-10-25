@@ -41,9 +41,9 @@ static BotArm_Config arm_configs[] = {
         {1, 1, 1, 1, 1, 0}, // 可移动节点标记：node_5不可通过move_to移动
 
         // 新增平滑移动参数
-        1000,    // move_duration_ms: 总移动时间2秒
-        25,      // update_interval_ms: 每50ms更新一次
-        2.0f     // max_angle_step: 最大单步角度变化5度
+        500,    // move_duration_ms: 总移动时间2秒
+        10,      // update_interval_ms: 每50ms更新一次
+        1.0f     // max_angle_step: 最大单步角度变化5度
     },
 };
 
@@ -127,6 +127,9 @@ static int BotArm_SmoothSetAngle(struct BotArm *P_BotArm, node Channel, float ta
     }
 
     if (Channel < node_0 || Channel >= node_MAX) {
+        return -3;
+    }
+    if (Channel < node_0 || Channel >= node_5) {
         return -3;
     }
 
@@ -332,12 +335,12 @@ static int BotArm_MoveJoints(struct BotArm *P_BotArm, float angles[])
     }
 
     // 关节角度调整逻辑
-    if (angles[2] < 35.0f) {
-        //关节3的旋转角度限制
-        angles[2] = 35.0f;
-        angles[3] = 90.0f;
-        angles[4] = 90.0f;
-    }
+    // if (angles[2] < 35.0f) {
+    //     //关节3的旋转角度限制
+    //     angles[2] = 35.0f;
+    //     angles[3] = 90.0f;
+    //     angles[4] = 90.0f;
+    // }
 
     // 使用协调移动，只移动 node_0 到 node_4
     return BotArm_CoordinatedMove(P_BotArm, angles, 5);

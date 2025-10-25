@@ -14,14 +14,16 @@ extern "C" {
 #endif
 #include "main.h"
 
-
-extern I2C_HandleTypeDef hi2c1;
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim6;
+extern  uint32_t Apple_Count,Strawberry_Count,Watermelon_Count, Sum;
+// extern I2C_HandleTypeDef hi2c1;
+// extern TIM_HandleTypeDef htim2;
+// extern TIM_HandleTypeDef htim6;
 
 int user_main();
 void user_main_int();
-  void bot_arm_Action_group(void);
+void bot_arm_Action_group(void);
+void DWIN_update(void);
+void run();
 
 #ifdef __cplusplus
 }
