@@ -17,13 +17,17 @@
 * DWIN 触摸屏通信与显示控制
 * 串口重定向（Retarget）以便通过 `printf` 输出调试信息
 
-工程分层清晰：底层驱动（Drivers/）、外设封装（PCA9685/、l298n/）、功能模块（bot_arm/、K230_uart_dma/、DWIN_uart/）与业务逻辑（user_main/）。
-# 界面展示
+## 系统实物
+![系统实物图](DWIN_Project/PSD/model.png)
 
-| 主页界面 | 数据界面 | 设置界面 |
-|:---:|:---:|:---:|
-| ![主页界面](DWIN_Project/PSD/home.png) | ![数据界面](DWIN_Project/PSD/data.png) | ![设置界面](DWIN_Project/PSD/set.png) |
-| 系统主操作界面 | 实时数据显示界面 | 参数配置界面 |
+## DWIN触摸屏界面
+
+| 功能界面 | 预览 | 说明 |
+|:---:|:---:|:---|
+| **主页界面** | ![主页界面](DWIN_Project/PSD/home.png) | 系统主操作界面 |
+| **数据界面** | ![数据界面](DWIN_Project/PSD/data.png) | 实时数据显示界面 |
+| **设置界面** | ![设置界面](DWIN_Project/PSD/set.png) | 参数配置界面 |
+
 # 主要特性
 
 * 使用 HAL 库 + CubeMX 自动生成初始化代码
@@ -31,22 +35,24 @@
 * 设备抽象层（易于替换硬件或移植）
 * 明确的目录结构，便于扩展与维护
 
-# 目录说明（摘要）
+# 目录结构
 
-* `Core/`：MCU 初始化、时钟、中断与外设（CubeMX 生成）
-* `Drivers/`：HAL 与 CMSIS 驱动
-* `bot_arm/`：机械臂控制抽象（上层动作序列）
-* `PCA9685/`：PCA9685 I²C 舵机驱动
-* `l298n/`：L298N 电机驱动与传送带封装
-* `K230_uart_dma/`：K230 数据解析（DMA 接收 + 空闲中断）
-* `DWIN_uart/`：DWIN 触摸屏命令解析与显示控制
-* `uart/`：串口重定向（Retarget）实现
-* `user_main/`：业务逻辑入口（分拣流程控制）
-* `PCB/`：PCB 设计文件（立创EDA专业版）
-* `DWIN_Project/`：DWIN 触摸屏项目文件
-* `K230/`：K230 YOLO模型与示例
+| 目录 | 功能说明 |
+|------|----------|
+| `Core/` | MCU初始化、时钟、中断与外设（CubeMX生成） |
+| `Drivers/` | HAL与CMSIS驱动 |
+| `bot_arm/` | 机械臂控制抽象（上层动作序列） |
+| `PCA9685/` | PCA9685 I²C舵机驱动 |
+| `l298n/` | L298N电机驱动与传送带封装 |
+| `K230_uart_dma/` | K230数据解析（DMA接收 + 空闲中断） |
+| `DWIN_uart/` | DWIN触摸屏命令解析与显示控制 |
+| `uart/` | 串口重定向（Retarget）实现 |
+| `user_main/` | 业务逻辑入口（分拣流程控制） |
+| `PCB/` | PCB设计文件（立创EDA专业版） |
+| `DWIN_Project/` | DWIN触摸屏项目文件 |
+| `K230/` | K230 YOLO模型与示例 |
 
-# 硬件连接（建议）
+# 硬件连接
 
 > **说明**：请根据你自己的硬件实际连接调整 `gpio`、`tim`、`i2c`、`uart` 的配置。
 
@@ -60,7 +66,7 @@
 
 * GNU Arm Embedded Toolchain（arm-none-eabi-gcc）
 * CMake
-* Make 或 CLion（推荐使用 CLion 打开工程）
+* CLion
 * 烧录器：DAP-Link / ST-Link / 其它
 
 # 串口与调试
