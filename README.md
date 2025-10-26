@@ -32,10 +32,16 @@
 
 # PCB与原理图设计展示
 
-| 设计视图 |              预览图              | 说明 |
-|:---:|:-----------------------------:|:---|
-| **PCB 3D视图** |   ![3D_PCB](PCB/3D_PCB.png)   | 系统主控板3D渲染效果图 |
-| **原理图设计** | ![原理图](PCB/SCH_Schematic.png) | 完整电路原理图设计 |
+# PCB与原理图设计展示
+
+<div align="center">
+
+| 设计视图 | 预览图 | 说明 |
+|:--------:|:------:|:-----|
+| **PCB 3D视图** | <img src="PCB/3D_PCB.png" width="500"> | 系统主控板3D渲染效果图 |
+| **原理图设计** | <img src="PCB/SCH_Schematic.png" width="500"> | 完整电路原理图设计 |
+
+</div>
 
 
 ## 主要特性
@@ -75,7 +81,7 @@
 ## 开发环境
 
 * **编译工具**：GNU Arm Embedded Toolchain (arm-none-eabi-gcc)
-* **构建系统**：CMake 
+* **构建系统**：CMake
 * **开发IDE**：CLion (推荐)
 * **烧录工具**：DAP-Link / ST-Link
 
@@ -90,5 +96,6 @@
 * 欢迎提交 Issue 和 Pull Request
 
 ---
+
 
 **自动分拣系统** - 让嵌入式开发更简单高效
