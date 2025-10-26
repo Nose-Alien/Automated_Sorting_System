@@ -17,16 +17,18 @@
 * DWIN 触摸屏通信与显示控制
 * 串口重定向（Retarget）以便通过 `printf` 输出调试信息
 
-## 系统实物
-![系统实物图](DWIN_Project/PSD/model.png)
+# 模型实物图
 
-## DWIN触摸屏界面
+<div align="center">
+  <img src="DWIN_Project/PSD/model.jpg" width="60%">
+</div>
 
-| 功能界面 | 预览 | 说明 |
-|:---:|:---:|:---|
-| **主页界面** | ![主页界面](DWIN_Project/PSD/home.png) | 系统主操作界面 |
-| **数据界面** | ![数据界面](DWIN_Project/PSD/data.png) | 实时数据显示界面 |
-| **设置界面** | ![设置界面](DWIN_Project/PSD/set.png) | 参数配置界面 |
+# DWIN界面展示
+
+| 主页界面 | 数据界面 | 设置界面 |
+|:---:|:---:|:---:|
+| ![主页界面](DWIN_Project/PSD/home.png) | ![数据界面](DWIN_Project/PSD/data.png) | ![设置界面](DWIN_Project/PSD/set.png) |
+| 系统主操作界面 | 实时数据显示界面 | 参数配置界面 |
 
 # 主要特性
 
