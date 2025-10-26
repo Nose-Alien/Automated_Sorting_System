@@ -18,7 +18,12 @@
 * 串口重定向（Retarget）以便通过 `printf` 输出调试信息
 
 工程分层清晰：底层驱动（Drivers/）、外设封装（PCA9685/、l298n/）、功能模块（bot_arm/、K230_uart_dma/、DWIN_uart/）与业务逻辑（user_main/）。
+# 界面展示
 
+| 主页界面 | 数据界面 | 设置界面 |
+|:---:|:---:|:---:|
+| ![主页界面](DWIN_Project/PSD/home.png) | ![数据界面](DWIN_Project/PSD/data.png) | ![设置界面](DWIN_Project/PSD/set.png) |
+| 系统主操作界面 | 实时数据显示界面 | 参数配置界面 |
 # 主要特性
 
 * 使用 HAL 库 + CubeMX 自动生成初始化代码

@@ -1,6 +1,6 @@
 /**
 @file DWIN_uart.c
-@brief DWIN 触摸屏串口通信与命令处理实现（用户注释版）
+@brief DWIN 触摸屏串口通信与命令处理实现
 @author sleet
 @date 2025/9/30
 */
@@ -17,6 +17,7 @@ uint8_t DWIN_Speed_value=0;
  * @brief 将苹果相关状态写入 DWIN（开关 + 坐标 + 计数）
  * @param state ON/OFF
  * @param xValue X 坐标
+ *
  * @param yValue Y 坐标
  * @param count 数量
  */
