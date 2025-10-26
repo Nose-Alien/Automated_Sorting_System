@@ -30,12 +30,20 @@
 | ![主页界面](DWIN_Project/PSD/home.png) | ![数据界面](DWIN_Project/PSD/data.png) | ![设置界面](DWIN_Project/PSD/set.png) |
 | 系统主操作界面 | 实时数据显示界面 | 参数配置界面 |
 
-# 主要特性
+# PCB与原理图设计展示
 
-* 使用 HAL 库 + CubeMX 自动生成初始化代码
-* DMA + UART 空闲中断用于高效接收视觉模块与触摸屏数据
-* 设备抽象层（易于替换硬件或移植）
-* 明确的目录结构，便于扩展与维护
+| 设计视图 |              预览图              | 说明 |
+|:---:|:-----------------------------:|:---|
+| **PCB 3D视图** |   ![3D_PCB](PCB/3D_PCB.png)   | 系统主控板3D渲染效果图 |
+| **原理图设计** | ![原理图](PCB/SCH_Schematic.png) | 完整电路原理图设计 |
+
+
+## 主要特性
+
+* ✅ 使用 HAL 库 + CubeMX 自动生成初始化代码
+* ✅ DMA + UART 空闲中断用于高效接收视觉模块与触摸屏数据
+* ✅ 设备抽象层（易于替换硬件或移植）
+* ✅ 明确的目录结构，便于扩展与维护
 
 # 目录结构
 
@@ -64,12 +72,12 @@
 * 视觉模块：K230（UART，USART2）
 * 触摸屏：DWIN（UART，USART3）
 
-# 开发环境与依赖
+## 开发环境
 
-* GNU Arm Embedded Toolchain（arm-none-eabi-gcc）
-* CMake
-* CLion
-* 烧录器：DAP-Link / ST-Link / 其它
+* **编译工具**：GNU Arm Embedded Toolchain (arm-none-eabi-gcc)
+* **构建系统**：CMake 
+* **开发IDE**：CLion (推荐)
+* **烧录工具**：DAP-Link / ST-Link
 
 # 串口与调试
 
@@ -79,4 +87,8 @@
 
 # 开发与贡献
 
-* 欢迎提交 issue
+* 欢迎提交 Issue 和 Pull Request
+
+---
+
+**自动分拣系统** - 让嵌入式开发更简单高效
